@@ -1,20 +1,31 @@
 <?php
-
 /**
- * Common constants used across my development environments.
- * @package Baizman_Design_MU
- * @version 1.0.0
+ * Baizman Design Must-Use
+ * 
+ * @author        Baizman Design
+ * @package       Baizman_Design_MU
+ * @version       1.0.0
+ *
+ * @wordpress-plugin
+ * Plugin Name:   Baizman Design Must-Use
+ * Plugin URI:    https://bitbucket.org/baizmandesign/bzmndsgn-mu/
+ * Description:   A must-use WordPress plugin containing constant definitions used across my development environments.
+ * Author:        Saul Baizman
+ * Author URI:    https://baizmandesign.com
+ * Version:       1.0.0
+ * License:       GPLv3
+ * Text Domain:   bzmndsgnmu
  */
 
 /*
-Constants that don't work in this file / must be located in wp-config.php:
-	+ WP_DEBUG
-	+ WP_DEBUG_LOG
-	+ WP_DEBUG_DISPLAY
-	+ SCRIPT_DEBUG
-	+ WP_MEMORY_LIMIT
-	+ WP_MAX_MEMORY_LIMIT
-	+ WP_CACHE
+Some constants must be located in wp-config.php and can't be placed in a must-use plugin:
++ WP_DEBUG
++ WP_DEBUG_LOG
++ WP_DEBUG_DISPLAY
++ SCRIPT_DEBUG
++ WP_MEMORY_LIMIT
++ WP_MAX_MEMORY_LIMIT
++ WP_CACHE
 */
 
 if ( ! defined ( 'JETPACK_STAGING_MODE' ) ) { 
