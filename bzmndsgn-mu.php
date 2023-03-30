@@ -55,7 +55,7 @@ if ( ! defined ( 'DISABLE_WP_CRON' ) ) {
 }
 
 if ( ! defined ( 'WP_ENVIRONMENT_TYPE' ) ) { 
-	define( 'WP_ENVIRONMENT_TYPE', 'development' );
+	define( 'WP_ENVIRONMENT_TYPE', 'local' );
 }
 
 if ( ! defined ( 'WP_DISABLE_FATAL_ERROR_HANDLER' ) ) { 
