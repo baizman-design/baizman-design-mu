@@ -1,10 +1,10 @@
 <?php
 /**
  * Baizman Design Must-Use
- * 
+ *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.0
+ * @version       1.0.1
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.0
+ * Version:       1.0.1
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -85,3 +85,18 @@ if ( ! defined ( 'CONCATENATE_SCRIPTS' ) ) {
 if ( ! defined ( 'ALLOW_UNFILTERED_UPLOADS' ) ) { 
 	define( 'ALLOW_UNFILTERED_UPLOADS', true ) ;
 }
+
+// https://toolset.com/documentation/programmer-reference/debugging-sites-built-with-toolset/
+// Alternative debugging method
+// define('TOOLSET_LOGGING_STATUS', 'info');
+//
+// Advanced Debug Information
+// define('TOOLSET_LOGGING_STATUS', 'debug');
+
+// disable all emails
+// https://wordpress.stackexchange.com/questions/302176/how-to-disable-all-wordpress-emails-modularly-and-programatically
+function bzmndsgn_disable_emails( $args ){
+	unset ( $args['to'] );
+	return $args;
+}
+add_filter('wp_mail','bzmndsgn_disable_emails', 10,1);
