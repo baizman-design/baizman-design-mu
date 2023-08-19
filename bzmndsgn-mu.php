@@ -26,6 +26,7 @@ Some constants must be located in wp-config.php and can't be placed in a must-us
 + WP_MEMORY_LIMIT
 + WP_MAX_MEMORY_LIMIT
 + WP_CACHE
++ WP_DEVELOPMENT_MODE
 */
 
 if ( ! defined ( 'JETPACK_STAGING_MODE' ) ) {
