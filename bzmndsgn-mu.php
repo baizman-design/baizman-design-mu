@@ -94,10 +94,13 @@ if ( ! defined ( 'ALLOW_UNFILTERED_UPLOADS' ) ) {
 // Advanced Debug Information
 // define('TOOLSET_LOGGING_STATUS', 'debug');
 
-// disable all emails
-// https://wordpress.stackexchange.com/questions/302176/how-to-disable-all-wordpress-emails-modularly-and-programatically
-function bzmndsgn_disable_emails( $args ){
+// disable all emails.
+// @link https://wordpress.stackexchange.com/questions/302176/how-to-disable-all-wordpress-emails-modularly-and-programatically
+add_filter ( 'wp_mail', function ( $args ) {
 	unset ( $args['to'] );
 	return $args;
-}
-add_filter('wp_mail','bzmndsgn_disable_emails', 10,1);
+}, 10, 1) ;
+
+// disable administration email verification screen.
+// @link https://www.wpbeginner.com/wp-tutorials/how-to-disable-wordpress-admin-email-verification-notice/
+add_filter ( 'admin_email_check_interval', '__return_false' ) ;
