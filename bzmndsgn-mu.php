@@ -4,15 +4,15 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.2
+ * @version       1.0.3
  *
  * @wordpress-plugin
- * Plugin Name:   Baizman Design Must-Use
+ * Plugin Name:   Baizman Design Must-Use Plugin
  * Plugin URI:    https://bitbucket.org/baizmandesign/bzmndsgn-mu/
- * Description:   A must-use WordPress plugin containing constant definitions used across my development environments.
+ * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.2
+ * Version:       1.0.3
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -170,11 +170,10 @@ class mu_plugin
 	public function add_disabled_notice ($plugin_meta, $plugin_file ): array
 	{
 		if ( in_array (  $plugin_file, $this->disabled_plugins) ) {
-			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s %4$s</span>',
+			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s</span>',
 			$this->disabled_plugin_class,
 			__('Disabled by'),
 			$this->_get_plugin_name(),
-			__('plugin'),
 			);
 		}
 		return $plugin_meta;
@@ -192,7 +191,7 @@ class mu_plugin
 	  printf('<style>
 		span.%1$s {
 		  font-weight: bold;
-		  color: orange;
+		  color: rgba(265,165,0,1);
 		}
 	  </style>',
 	  $this->disabled_plugin_class,
@@ -224,7 +223,7 @@ class mu_plugin
 	 */
 	private function _get_plugin_name (): string {
 		$plugin_data = get_plugin_data ($this->plugin_file) ;
-		return $plugin_data['Name'] ; // not 'Plugin Name'
+		return $plugin_data['Name'] ; // note: array key is not 'Plugin Name'
 	}
 
 }

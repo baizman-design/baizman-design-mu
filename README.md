@@ -21,4 +21,4 @@ $ ln -s ~/www/bzmndsgn-mu/bzmndsgn-mu.php ~/www/site.test/wp-content/mu-plugins/
 
 ## configuration
 
-The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup or firewall plugins. To disable a plugin, add a plugin path (`folder/filename.php`) to the `$disabled_plugins` array at the top of the file.
+The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup, firewall, and caching plugins. To disable a plugin, add a plugin path (`folder/filename.php`) to the `$disabled_plugins` array at the top of the file.
