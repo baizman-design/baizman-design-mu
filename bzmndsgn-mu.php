@@ -36,10 +36,10 @@ class mu_plugin
 	// plugin file
 	private string $plugin_file = __FILE__;
 
-	// slugs of plugins to forcibly disable.
+	// paths of plugins to forcibly disable.
 	private array $disabled_plugins = [
-		'sucuri-scanner', // Sucuri
-		'updraftplus', // UpdraftPlus
+		'sucuri-scanner/sucuri.php', // Sucuri
+		'updraftplus/updraftplus.php', // UpdraftPlus
 		];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
@@ -143,6 +143,8 @@ class mu_plugin
 	 * @link https://developer.wordpress.org/reference/hooks/option_option/
 	 * @link https://github.com/mklasen/alcedo-wordpress/blob/master/app/www/content/mu-plugins/manage-plugins.php
 	 *
+	 * TODO (maybe): use deactivate_plugins() function instead of unsetting the array value.
+	 *
 	 * @param array $plugins
 	 * @return array
 	 */
@@ -150,8 +152,7 @@ class mu_plugin
 	{
 		if ( count( $this->disabled_plugins ) > 0 ) {
 			foreach ( $plugins as $plugin_index => $plugin_path ) {
-				$plugin_slug = dirname ($plugin_path) ;
-				if (in_array ( $plugin_slug, $this->disabled_plugins ) ) {
+				if (in_array ( $plugin_path, $this->disabled_plugins ) ) {
 					unset( $plugins[$plugin_index] ) ;
 				}
 			}
@@ -168,7 +169,7 @@ class mu_plugin
 	 */
 	public function add_disabled_notice ($plugin_meta, $plugin_file ): array
 	{
-		if ( in_array ( dirname ($plugin_file), $this->disabled_plugins) ) {
+		if ( in_array (  $plugin_file, $this->disabled_plugins) ) {
 			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s %4$s</span>',
 			$this->disabled_plugin_class,
 			__('Disabled by'),
@@ -206,8 +207,8 @@ class mu_plugin
 	 * @return array
 	 */
 	public function remove_activate_link ($plugin_actions, $plugin_file ): array {
-		
-		if (in_array ( dirname ($plugin_file), $this->disabled_plugins) ) {
+
+		if (in_array ( $plugin_file, $this->disabled_plugins) ) {
 			unset ( $plugin_actions['activate'] ) ;
 		}
 		return $plugin_actions;
