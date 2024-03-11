@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.3
+ * @version       1.0.4
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.3
+ * Version:       1.0.4
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -206,13 +206,12 @@ class mu_plugin
 	 * @param $plugin_file
 	 * @return array
 	 */
-	public function remove_activate_link ($plugin_actions, $plugin_file ): array {
-
+	public function remove_activate_link ($plugin_actions, $plugin_file ): array
+	{
 		if (in_array ( $plugin_file, $this->disabled_plugins) ) {
 			unset ( $plugin_actions['activate'] ) ;
 		}
 		return $plugin_actions;
-
 	}
 
 	/**
@@ -222,7 +221,8 @@ class mu_plugin
 	 *
 	 * @return string
 	 */
-	private function _get_plugin_name (): string {
+	private function _get_plugin_name (): string
+	{
 		$plugin_data = get_plugin_data ($this->plugin_file) ;
 		return $plugin_data['Name'] ; // note: array key is not 'Plugin Name'
 	}
