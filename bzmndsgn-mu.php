@@ -40,6 +40,7 @@ class mu_plugin
 	private array $disabled_plugins = [
 		'sucuri-scanner/sucuri.php', // Sucuri
 		'updraftplus/updraftplus.php', // UpdraftPlus
+		'comet-cache/comet-cache.php', // Comet Cache
 		];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
