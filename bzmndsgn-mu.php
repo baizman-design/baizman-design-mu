@@ -1,6 +1,6 @@
 <?php
 /**
- * Baizman Design Must-Use
+ * Baizman Design Must-Use Plugin
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
