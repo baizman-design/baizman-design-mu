@@ -41,6 +41,11 @@ class mu_plugin
 		'sucuri-scanner/sucuri.php', // Sucuri
 		'updraftplus/updraftplus.php', // UpdraftPlus
 		'comet-cache/comet-cache.php', // Comet Cache
+		'sg-cachepress/sg-cachepress.php', // Speed Optimizer (SiteGround)
+		'sg-security/sg-security.php', // Security Optimizer (SiteGround)
+		'wp-2fa/wp-2fa.php', // WP 2FA - Two-factor authentication for WordPress
+		'backwpup/backwpup.php', // BackWPup
+		'w3-total-cache/w3-total-cache.php', // W3 Total Cache
 		];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
