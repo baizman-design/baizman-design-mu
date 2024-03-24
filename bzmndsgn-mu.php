@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.4
+ * @version       1.0.5
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.4
+ * Version:       1.0.5
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -36,16 +36,16 @@ class mu_plugin
 	// plugin file
 	private string $plugin_file = __FILE__;
 
-	// paths of plugins to forcibly disable.
+	// slugs of plugins to forcibly disable.
 	private array $disabled_plugins = [
-		'sucuri-scanner/sucuri.php', // Sucuri
-		'updraftplus/updraftplus.php', // UpdraftPlus
-		'comet-cache/comet-cache.php', // Comet Cache
-		'sg-cachepress/sg-cachepress.php', // Speed Optimizer (SiteGround)
-		'sg-security/sg-security.php', // Security Optimizer (SiteGround)
-		'wp-2fa/wp-2fa.php', // WP 2FA - Two-factor authentication for WordPress
-		'backwpup/backwpup.php', // BackWPup
-		'w3-total-cache/w3-total-cache.php', // W3 Total Cache
+		'sucuri-scanner', // Sucuri
+		'updraftplus', // UpdraftPlus
+		'comet-cache', // Comet Cache
+		'sg-cachepress', // Speed Optimizer (SiteGround)
+		'sg-security', // Security Optimizer (SiteGround)
+		'wp-2fa', // WP 2FA - Two-factor authentication for WordPress
+		'backwpup', // BackWPup
+		'w3-total-cache', // W3 Total Cache
 		];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
@@ -157,8 +157,9 @@ class mu_plugin
 	public function disable_plugins( array $plugins ): array
 	{
 		if ( count( $this->disabled_plugins ) > 0 ) {
-			foreach ( $plugins as $plugin_index => $plugin_path ) {
-				if (in_array ( $plugin_path, $this->disabled_plugins ) ) {
+			foreach ( $plugins as $plugin_index => $plugin ) {
+				list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin );
+				if (in_array ( $directory, $this->disabled_plugins ) ) {
 					unset( $plugins[$plugin_index] ) ;
 				}
 			}
@@ -175,7 +176,8 @@ class mu_plugin
 	 */
 	public function add_disabled_notice ($plugin_meta, $plugin_file ): array
 	{
-		if ( in_array (  $plugin_file, $this->disabled_plugins) ) {
+		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
+		if ( in_array ( $directory, $this->disabled_plugins ) ) {
 			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s</span>',
 			$this->disabled_plugin_class,
 			__('Disabled by'),
@@ -213,7 +215,8 @@ class mu_plugin
 	 */
 	public function remove_activate_link ($plugin_actions, $plugin_file ): array
 	{
-		if (in_array ( $plugin_file, $this->disabled_plugins) ) {
+		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
+		if ( in_array ( $directory, $this->disabled_plugins) ) {
 			unset ( $plugin_actions['activate'] ) ;
 		}
 		return $plugin_actions;
