@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.5
+ * @version       1.0.6
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.5
+ * Version:       1.0.6
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -46,6 +46,8 @@ class mu_plugin
 		'wp-2fa', // WP 2FA - Two-factor authentication for WordPress
 		'backwpup', // BackWPup
 		'w3-total-cache', // W3 Total Cache
+		'wordfence', // Wordfence
+		'akismet', // Akismet
 		];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
