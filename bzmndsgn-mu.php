@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.6
+ * @version       1.0.7
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.6
+ * Version:       1.0.7
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -49,6 +49,8 @@ class mu_plugin
 		'wordfence', // Wordfence
 		'akismet', // Akismet
 		];
+
+	private const user_disabled_plugins_filename = '.disabled-plugins' ;
 
 	private string $disabled_plugin_class = 'disabled_plugin';
 
@@ -158,12 +160,10 @@ class mu_plugin
 	 */
 	public function disable_plugins( array $plugins ): array
 	{
-		if ( count( $this->disabled_plugins ) > 0 ) {
-			foreach ( $plugins as $plugin_index => $plugin ) {
-				list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin );
-				if (in_array ( $directory, $this->disabled_plugins ) ) {
-					unset( $plugins[$plugin_index] ) ;
-				}
+		foreach ( $plugins as $plugin_index => $plugin ) {
+			list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin );
+			if (in_array ( $directory, $this->_get_disabled_plugins() ) ) {
+				unset( $plugins[$plugin_index] ) ;
 			}
 		}
 		return $plugins;
@@ -179,7 +179,7 @@ class mu_plugin
 	public function add_disabled_notice ($plugin_meta, $plugin_file ): array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
-		if ( in_array ( $directory, $this->disabled_plugins ) ) {
+		if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
 			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s</span>',
 			$this->disabled_plugin_class,
 			__('Disabled by'),
@@ -218,7 +218,7 @@ class mu_plugin
 	public function remove_activate_link ($plugin_actions, $plugin_file ): array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
-		if ( in_array ( $directory, $this->disabled_plugins) ) {
+		if ( in_array ( $directory, $this->_get_disabled_plugins()) ) {
 			unset ( $plugin_actions['activate'] ) ;
 		}
 		return $plugin_actions;
@@ -235,6 +235,22 @@ class mu_plugin
 	{
 		$plugin_data = get_plugin_data ($this->plugin_file) ;
 		return $plugin_data['Name'] ; // note: array key is not 'Plugin Name'
+	}
+
+	/**
+	 * Get all disabled plugins.
+	 *
+	 * @return array
+	 */
+	private function _get_disabled_plugins():array
+	{
+		$mu_plugin_disabled_plugins = $this->disabled_plugins ;
+		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename ;
+		$user_disabled_plugins = [];
+		if (file_exists($user_disabled_plugins_path)){
+			$user_disabled_plugins = file($user_disabled_plugins_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		}
+		return array_merge ($mu_plugin_disabled_plugins, $user_disabled_plugins );
 	}
 
 }

@@ -56,4 +56,6 @@ $ ln -s vendor/baizmandesign/bzmndsgn-mu/bzmndsgn-mu.php path/to/wordpress/wp-co
 
 ### disable plugins
 
-The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup, firewall, and caching plugins. To disable a plugin, add a slug to the `$disabled_plugins` array at the top of `bzmndsgn-mu.php`.
+The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup, firewall, and caching plugins. 
+
+To disable a plugin, add a slug, one per line, to a file named `.disabled-plugins` in the root directory of your WordPress instance.
