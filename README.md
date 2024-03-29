@@ -43,7 +43,7 @@ Require the package in `composer.json`:
 
 Install the package:
 ```
-$ composer update
+$ composer install
 ```
 
 Then create a symbolic link:

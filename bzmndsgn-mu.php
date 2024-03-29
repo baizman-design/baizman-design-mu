@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.7
+ * @version       1.0.8
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.7
+ * Version:       1.0.8
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -51,6 +51,8 @@ class mu_plugin
 		];
 
 	private const user_disabled_plugins_filename = '.disabled-plugins' ;
+
+	private array $user_disabled_plugins = [];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
 
@@ -114,6 +116,8 @@ class mu_plugin
 		if (!defined('ALLOW_UNFILTERED_UPLOADS')) {
 			define('ALLOW_UNFILTERED_UPLOADS', true);
 		}
+
+		$this->_load_user_disabled_plugins ( ) ;
 
 		// https://toolset.com/documentation/programmer-reference/debugging-sites-built-with-toolset/
 		// Alternative debugging method
@@ -180,10 +184,12 @@ class mu_plugin
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
-			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s</span>',
+			$plugin_meta[] = sprintf('<span class="%1$s">%2$s %3$s (%4$s)</span>',
 			$this->disabled_plugin_class,
 			__('Disabled by'),
 			$this->_get_plugin_name(),
+			// disabled by the user or the plugin/system?
+			in_array($directory, $this->user_disabled_plugins) ? __('User') : __('System'),
 			);
 		}
 		return $plugin_meta;
@@ -238,19 +244,27 @@ class mu_plugin
 	}
 
 	/**
+	 * Load user disabled plugins from a file.
+	 *
+	 * @return void
+	 */
+	private function _load_user_disabled_plugins(): void
+	{
+		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename ;
+		if (file_exists($user_disabled_plugins_path)){
+			$user_disabled_plugins = file($user_disabled_plugins_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		}
+		$this->user_disabled_plugins = $user_disabled_plugins ?? [] ;
+	}
+
+	/**
 	 * Get all disabled plugins.
 	 *
 	 * @return array
 	 */
 	private function _get_disabled_plugins():array
 	{
-		$mu_plugin_disabled_plugins = $this->disabled_plugins ;
-		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename ;
-		$user_disabled_plugins = [];
-		if (file_exists($user_disabled_plugins_path)){
-			$user_disabled_plugins = file($user_disabled_plugins_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-		}
-		return array_merge ($mu_plugin_disabled_plugins, $user_disabled_plugins );
+		return array_merge ($this->disabled_plugins, $this->user_disabled_plugins );
 	}
 
 }
