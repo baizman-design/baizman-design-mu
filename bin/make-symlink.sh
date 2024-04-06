@@ -7,6 +7,8 @@ plugin="bzmndsgn-mu.php"
 vendor_dir="$(composer config vendor-dir)"
 wp_content_dir="wp-content"
 mu_dir="${wp_content_dir}/mu-plugins"
+MKDIR=$(which mkdir)
+LN=$(which ln)
 
 echo "Attempting to install alias..."
 
@@ -16,8 +18,8 @@ then
     # does mu-plugins exist? if not, make it.
     if [ ! -d "${mu_dir}" ]
     then
-        mkdir ${mu_dir}
+        ${MKDIR} ${mu_dir}
     fi
     # create link
-    ln -s ../../${vendor_dir}/${plugin_dir}/${plugin} ${mu_dir}/${plugin}
+    ${LN} -s ../../${vendor_dir}/${plugin_dir}/${plugin} ${mu_dir}/${plugin}
 fi
