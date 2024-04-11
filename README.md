@@ -61,4 +61,4 @@ The post-install script will automatically create the `wp-content/mu-plugins` fo
 
 The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup, firewall, and caching plugins. 
 
-To disable a plugin, add a slug, one per line, to a file named `.disabled-plugins` in the root directory of your WordPress instance.
+To disable a plugin, add a slug, one per line, to a file named `.bzmndsgn-mu-disabled-plugins` in the root directory of your WordPress instance.

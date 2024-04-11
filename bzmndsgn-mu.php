@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman_Design_MU
- * @version       1.0.8
+ * @version       1.0.10
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.8
+ * Version:       1.0.10
  * License:       GPLv3
  * Text Domain:   bzmndsgnmu
  */
@@ -50,7 +50,7 @@ class mu_plugin
 		'akismet', // Akismet
 		];
 
-	private const user_disabled_plugins_filename = '.disabled-plugins' ;
+	private const user_disabled_plugins_filename = '.bzmndsgn-mu-disabled-plugins' ;
 
 	private array $user_disabled_plugins = [];
 
