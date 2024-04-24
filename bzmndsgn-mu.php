@@ -269,4 +269,4 @@ class mu_plugin
 
 }
 
-new mu_plugin ( ) ;
+new mu_plugin;
