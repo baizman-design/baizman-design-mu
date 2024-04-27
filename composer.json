@@ -1,7 +1,7 @@
 {
-    "name": "baizmandesign/bzmndsgn-mu",
+    "name": "baizmandesign/baizman-design-mu",
     "description": "A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.",
-    "homepage": "https://github.com/baizmandesign/bzmndsgn-mu/",
+    "homepage": "https://github.com/baizmandesign/baizman-design-mu/",
     "type": "wordpress-plugin",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -17,7 +17,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/baizmandesign/bzmndsgn-mu/issues/new"
+        "issues": "https://github.com/baizmandesign/baizman-design-mu/issues/new"
     },
     "require": {
         "php": "8.*"

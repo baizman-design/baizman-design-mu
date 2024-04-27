@@ -3,18 +3,18 @@
  * Baizman Design Must-Use Plugin
  *
  * @author        Baizman Design
- * @package       Baizman_Design_MU
- * @version       1.0.10
+ * @package       Baizman Design MU
+ * @version       1.0.12
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
- * Plugin URI:    https://bitbucket.org/baizmandesign/bzmndsgn-mu/
+ * Plugin URI:    https://bitbucket.org/baizmandesign/baizman-design-mu/
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.10
+ * Version:       1.0.12
  * License:       GPLv3
- * Text Domain:   bzmndsgnmu
+ * Text Domain:   baizman-design-mu
  */
 
 /*
@@ -29,7 +29,7 @@ Some constants must be located in wp-config.php and have no effect in a must-use
 + WP_DEVELOPMENT_MODE
 */
 
-namespace baizman_design_mustuse ;
+namespace baizman_design_mu ;
 
 class mu_plugin
 {
@@ -50,7 +50,7 @@ class mu_plugin
 		'akismet', // Akismet
 		];
 
-	private const user_disabled_plugins_filename = '.bzmndsgn-mu-disabled-plugins' ;
+	private const user_disabled_plugins_filename = '.baizman-design-mu-disabled-plugins' ;
 
 	private array $user_disabled_plugins = [];
 

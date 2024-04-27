@@ -2,8 +2,8 @@
 
 # install alias in mu-plugins folder.
 
-plugin_dir="baizmandesign/bzmndsgn-mu"
-plugin="bzmndsgn-mu.php"
+plugin_dir="baizmandesign/baizman-design-mu"
+plugin="baizman-design-mu.php"
 vendor_dir="$(composer config vendor-dir)"
 wp_content_dir="wp-content"
 mu_dir="${wp_content_dir}/mu-plugins"
