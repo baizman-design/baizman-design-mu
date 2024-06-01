@@ -34,15 +34,15 @@ Require the package in `composer.json`:
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:baizmandesign/baizman-design-mu.git"
+            "url": "git@github.com:baizman-design/baizman-design-mu.git"
         }
     ],
     "require-dev": {
-        "baizmandesign/bzmndsgn-mu": "dev-production"
+        "baizman-design/baizman-design-mu": "dev-production"
     },
     "scripts": {
         "post-package-install": [
-          "$(composer config vendor-dir)/baizmandesign/baizman-design-mu/bin/make-symlink.sh"
+          "$(composer config vendor-dir)/baizman-design/baizman-design-mu/bin/make-symlink.sh"
         ]
     }
 }
