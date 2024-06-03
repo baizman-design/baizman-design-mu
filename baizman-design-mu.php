@@ -59,6 +59,52 @@ class mu_plugin
 	public function __construct()
 	{
 
+		$this->define_constants();
+
+		$this->_load_user_disabled_plugins ( ) ;
+
+		// enable autologin
+		add_action( 'init', [$this, 'autologin'], -PHP_INT_MAX );
+
+		// https://toolset.com/documentation/programmer-reference/debugging-sites-built-with-toolset/
+		// Alternative debugging method
+		// define('TOOLSET_LOGGING_STATUS', 'info');
+		//
+		// Advanced Debug Information
+		// define('TOOLSET_LOGGING_STATUS', 'debug');
+
+		// disable all emails.
+		// @link https://wordpress.stackexchange.com/questions/302176/how-to-disable-all-wordpress-emails-modularly-and-programatically
+		add_filter('wp_mail', function ($args) {
+			unset ($args['to']);
+			return $args;
+		} );
+
+		// disable administration email verification screen.
+		// @link https://www.wpbeginner.com/wp-tutorials/how-to-disable-wordpress-admin-email-verification-notice/
+		add_filter('admin_email_check_interval', '__return_false');
+
+		// callback to forcibly disable select plugins.
+		add_filter( 'option_active_plugins', [$this, 'disable_plugins'] );
+
+		// callback to modify plugin data on plugins page.
+		add_filter( 'plugin_row_meta', [$this, 'add_disabled_notice'], 10, 2 );
+
+		// callback to add styles to dashboard.
+		add_action('admin_head', [$this, 'admin_styles'] );
+
+		// callback to remove "activate" link from plugin actions for disabled plugins
+		add_filter( 'plugin_action_links', [$this, 'remove_activate_link'], 10, 2 );
+
+	}
+
+	/**
+	 * Define some useful constants.
+	 *
+	 * @return void
+	 */
+	public function define_constants (): void
+	{
 		if (!defined('JETPACK_STAGING_MODE')) {
 			define('JETPACK_STAGING_MODE', true);
 		}
@@ -72,7 +118,7 @@ class mu_plugin
 			define('WP_POST_REVISIONS', false);
 		}
 
-		// # https://kinsta.com/blog/wp-query/
+		// https://kinsta.com/blog/wp-query/
 		if (!defined('SAVEQUERIES')) {
 			define('SAVEQUERIES', true);
 		}
@@ -116,39 +162,26 @@ class mu_plugin
 		if (!defined('ALLOW_UNFILTERED_UPLOADS')) {
 			define('ALLOW_UNFILTERED_UPLOADS', true);
 		}
+	}
 
-		$this->_load_user_disabled_plugins ( ) ;
-
-		// https://toolset.com/documentation/programmer-reference/debugging-sites-built-with-toolset/
-		// Alternative debugging method
-		// define('TOOLSET_LOGGING_STATUS', 'info');
-		//
-		// Advanced Debug Information
-		// define('TOOLSET_LOGGING_STATUS', 'debug');
-
-		// disable all emails.
-		// @link https://wordpress.stackexchange.com/questions/302176/how-to-disable-all-wordpress-emails-modularly-and-programatically
-		add_filter('wp_mail', function ($args) {
-			unset ($args['to']);
-			return $args;
-		} );
-
-		// disable administration email verification screen.
-		// @link https://www.wpbeginner.com/wp-tutorials/how-to-disable-wordpress-admin-email-verification-notice/
-		add_filter('admin_email_check_interval', '__return_false');
-
-		// callback to forcibly disable select plugins.
-		add_filter( 'option_active_plugins', [$this, 'disable_plugins'] );
-
-		// callback to modify plugin data on plugins page.
-		add_filter( 'plugin_row_meta', [$this, 'add_disabled_notice'], 10, 2 );
-
-		// callback to add styles to dashboard.
-		add_action('admin_head', [$this, 'admin_styles'] );
-
-		// callback to remove "activate" link from plugin actions for disabled plugins
-		add_filter( 'plugin_action_links', [$this, 'remove_activate_link'], 10, 2 );
-
+	/**
+	 * Look for auto query string argument. If present, try to log in as a user. On failure, forward to login screen.
+	 *
+	 * @return void
+	 */
+	public function autologin() {
+		if ( ! empty( $_GET['auto'] ) ) {
+			$user = get_user_by( 'email', $_GET['auto'] );
+			if ( $user ) {
+				wp_clear_auth_cookie();
+				wp_set_current_user( $user->ID );
+				wp_set_auth_cookie( $user->ID );
+				wp_redirect( get_dashboard_url() );
+			} else {
+				wp_redirect( wp_login_url() );
+			}
+			exit ;
+		}
 	}
 
 	/**
