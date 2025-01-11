@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman Design MU
- * @version       1.0.12
+ * @version       1.0.13
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.12
+ * Version:       1.0.13
  * License:       GPLv3
  * Text Domain:   baizman-design-mu
  */
@@ -50,9 +50,13 @@ class mu_plugin
 		'akismet', // Akismet
 		];
 
+	private const config_filename = '.baizman-design-mu.ini' ;
+
 	private const user_disabled_plugins_filename = '.baizman-design-mu-disabled-plugins' ;
 
 	private array $user_disabled_plugins = [];
+
+	private string $autologin_email = '';
 
 	private string $disabled_plugin_class = 'disabled_plugin';
 
@@ -61,7 +65,7 @@ class mu_plugin
 
 		$this->define_constants();
 
-		$this->_load_user_disabled_plugins ( ) ;
+		$this->_load_config_file();
 
 		// enable autologin
 		add_action( 'init', [$this, 'autologin'], -PHP_INT_MAX );
@@ -91,10 +95,16 @@ class mu_plugin
 		add_filter( 'plugin_row_meta', [$this, 'add_disabled_notice'], 10, 2 );
 
 		// callback to add styles to dashboard.
-		add_action('admin_head', [$this, 'admin_styles'] );
+		add_action('admin_head', [$this, 'add_admin_styles'] );
 
 		// callback to remove "activate" link from plugin actions for disabled plugins
 		add_filter( 'plugin_action_links', [$this, 'remove_activate_link'], 10, 2 );
+
+		// callback to modify login screen #nav links.
+		add_filter( 'lost_password_html_link', [$this, 'add_autologin_link'] );
+
+		// callback to add styles to the login screen.
+		add_action( 'login_enqueue_scripts', [$this, 'add_login_screen_styles'] );
 
 	}
 
@@ -169,7 +179,8 @@ class mu_plugin
 	 *
 	 * @return void
 	 */
-	public function autologin() {
+	public function autologin(): void
+	{
 		if ( ! empty( $_GET['auto'] ) ) {
 			$user = get_user_by( 'email', $_GET['auto'] );
 			if ( $user ) {
@@ -213,7 +224,7 @@ class mu_plugin
 	 * @param $plugin_file
 	 * @return array
 	 */
-	public function add_disabled_notice ($plugin_meta, $plugin_file ): array
+	public function add_disabled_notice ( $plugin_meta, $plugin_file ): array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
@@ -235,7 +246,7 @@ class mu_plugin
 	 * @link https://css-tricks.com/snippets/wordpress/apply-custom-css-to-admin-area/
 	 * @return void
 	 */
-	public function admin_styles(): void
+	public function add_admin_styles(): void
 	{
 	  printf('<style>
 		span.%1$s {
@@ -248,13 +259,28 @@ class mu_plugin
 	}
 
 	/**
+	 * Add styles to the WordPress login screen.
+	 *
+	 * @return void
+	 */
+	public function add_login_screen_styles(): void
+	{
+		print('<style>
+			/* boldface the "autologin" link. */
+			body.login #nav a.autologin {
+			  font-weight: bold;
+			}
+		</style>');
+	}
+
+	/**
 	 * Remove "activate" link from plugin actions for disabled plugins.
 	 *
 	 * @param $plugin_actions
 	 * @param $plugin_file
 	 * @return array
 	 */
-	public function remove_activate_link ($plugin_actions, $plugin_file ): array
+	public function remove_activate_link ( $plugin_actions, $plugin_file ): array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins()) ) {
@@ -262,6 +288,18 @@ class mu_plugin
 		}
 		return $plugin_actions;
 	}
+
+	public function add_autologin_link ( $link ): string
+	{
+		if ( ! empty ($this->autologin_email) ){
+			$link .= sprintf(' | <a class="autologin" href="%1$s/?auto=%2$s">Autologin</a>',
+				get_home_url(),
+				$this->autologin_email,
+			) ;
+		}
+		return $link;
+	}
+
 
 	/**
 	 * Get the plugin name.
@@ -277,11 +315,30 @@ class mu_plugin
 	}
 
 	/**
-	 * Load user disabled plugins from a file.
+	 * Load configuration from a file.
 	 *
 	 * @return void
 	 */
-	private function _load_user_disabled_plugins(): void
+	private function _load_config_file (): void {
+		// load deprecated file.
+		$this->_load_deprecated_user_disabled_plugins_file ( ) ;
+		$config_file_path = ABSPATH.self::config_filename ;
+		if ( file_exists( $config_file_path ) ) {
+			$config = parse_ini_file ( filename: $config_file_path, process_sections: true ) ;
+			// add arrays of plugins in both files together.
+			$this->user_disabled_plugins = array_merge ( $this->user_disabled_plugins, $config['disabled_plugins']['plugin'] ?? [] );
+			// set autologin email address.
+			$this->autologin_email = $config['autologin']['email'] ?? $this->autologin_email;
+		}
+	}
+
+
+	/**
+	 * Load user disabled plugins from a file. Deprecated.
+	 *
+	 * @return void
+	 */
+	private function _load_deprecated_user_disabled_plugins_file(): void
 	{
 		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename ;
 		if (file_exists($user_disabled_plugins_path)){
@@ -297,7 +354,7 @@ class mu_plugin
 	 */
 	private function _get_disabled_plugins():array
 	{
-		return array_merge ($this->disabled_plugins, $this->user_disabled_plugins );
+		return array_merge ( $this->disabled_plugins, $this->user_disabled_plugins );
 	}
 
 }

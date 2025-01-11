@@ -57,12 +57,34 @@ The post-install script will automatically create the `wp-content/mu-plugins` fo
 
 ## configuration
 
+Create a file named `.baizman-design-mu.ini` in the root directory of your WordPress instance.
+
 ### disable plugins
 
-The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup, firewall, and caching plugins. 
+The plugin can forcibly disable other plugins. This is useful for plugins that should only be run in a production environment, such as backup, firewall, and caching plugins.
 
-To disable a plugin, add a slug, one per line, to a file named `.baizman-design-mu-disabled-plugins` in the root directory of your WordPress instance.
+To disable a plugin, add the following section and key/value pairs to `.baizman-design-mu.ini`:
 
-## auto-login
+```
+[disabled_plugins]
+plugin[] = slug1
+plugin[] = slug2
+...
+```
 
-Visit https://yourdomain.test/?auto=user@domain.com, where "user@domain.com" is an email address that corresponds to an account.
+#### disable plugins configuration file (deprecated)
+
+Add a slug, one per line, to a file named `.baizman-design-mu-disabled-plugins` in the root directory of your WordPress instance.
+
+This is supported for historical reasons.
+
+### auto-login
+
+An "Autologin" link is added to the WordPress login screen right after "Lost your password?" To set the account to automatically log into, add the following section and key/value pair to `.baizman-design-mu.ini`:
+
+```
+[autologin]
+email = user@domain.com
+```
+
+You may also visit https://domain.test/?auto=user@domain.com, where "user@domain.com" is an email address that corresponds to an account.
