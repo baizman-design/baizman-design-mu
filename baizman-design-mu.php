@@ -289,15 +289,28 @@ class mu_plugin
 		return $plugin_actions;
 	}
 
-	public function add_autologin_link ( $link ): string
+	/**
+	 * Add autologin link to login screen.
+	 *
+	 * @param string $link_text
+	 * @return string
+	 */
+	public function add_autologin_link ( string $link_text ): string
 	{
-		if ( ! empty ($this->autologin_email) ){
-			$link .= sprintf(' | <a class="autologin" href="%1$s/?auto=%2$s">Autologin</a>',
+		if ( ! empty ( $this->autologin_email ) ){
+			// create array of links.
+			$links = [] ;
+			// add autologin link.
+			$links[] = sprintf('<a class="autologin" href="%1$s/?auto=%2$s">Autologin as %2$s &rarr;</a>',
 				get_home_url(),
 				$this->autologin_email,
 			) ;
+			// "Lost your password?"
+			$links[] = $link_text;
+			// separate the links with a break tag.
+			$link_text = implode('<br>', $links);
 		}
-		return $link;
+		return $link_text;
 	}
 
 
