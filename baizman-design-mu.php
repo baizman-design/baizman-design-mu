@@ -86,7 +86,7 @@ class mu_plugin
 
 		// disable administration email verification screen.
 		// @link https://www.wpbeginner.com/wp-tutorials/how-to-disable-wordpress-admin-email-verification-notice/
-		add_filter('admin_email_check_interval', '__return_false');
+		add_filter( 'admin_email_check_interval', '__return_false' );
 
 		// callback to forcibly disable select plugins.
 		add_filter( 'option_active_plugins', [$this, 'disable_plugins'] );
@@ -95,7 +95,7 @@ class mu_plugin
 		add_filter( 'plugin_row_meta', [$this, 'add_disabled_notice'], 10, 2 );
 
 		// callback to add styles to dashboard.
-		add_action('admin_head', [$this, 'add_admin_styles'] );
+		add_action( 'admin_head', [$this, 'add_admin_styles'] );
 
 		// callback to remove "activate" link from plugin actions for disabled plugins
 		add_filter( 'plugin_action_links', [$this, 'remove_activate_link'], 10, 2 );
@@ -105,6 +105,8 @@ class mu_plugin
 
 		// callback to add styles to the login screen.
 		add_action( 'login_enqueue_scripts', [$this, 'add_login_screen_styles'] );
+
+		add_action ( 'login_link_separator', [$this, 'set_login_link_separator' ] );
 
 	}
 
@@ -273,6 +275,16 @@ class mu_plugin
 		</style>');
 	}
 
+	public function set_login_link_separator (
+		$separator,
+	): string
+	{
+		if (get_option( 'users_can_register' )) {
+			return '';
+		}
+		return $separator;
+	}
+
 	/**
 	 * Remove "activate" link from plugin actions for disabled plugins.
 	 *
@@ -298,17 +310,24 @@ class mu_plugin
 	public function add_autologin_link ( string $link_text ): string
 	{
 		if ( ! empty ( $this->autologin_email ) ){
+
+			$separator = '<br>';
+			$login_link_separator = '';
+			if (get_option( 'users_can_register' )){
+				$login_link_separator = $separator;
+			}
 			// create array of links.
 			$links = [] ;
 			// add autologin link.
-			$links[] = sprintf('<a class="autologin" href="%1$s/?auto=%2$s">Autologin as %2$s &rarr;</a>',
+			$links[] = sprintf('%3$s<a class="autologin" href="%1$s/?auto=%2$s">Autologin as %2$s &rarr;</a>',
 				get_home_url(),
 				$this->autologin_email,
+				$login_link_separator,
 			) ;
 			// "Lost your password?"
 			$links[] = $link_text;
 			// separate the links with a break tag.
-			$link_text = implode('<br>', $links);
+			$link_text = implode( $separator, $links );
 		}
 		return $link_text;
 	}
