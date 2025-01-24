@@ -213,12 +213,14 @@ class mu_plugin
 	 * @param array $plugins
 	 * @return array
 	 */
-	public function disable_plugins( array $plugins ): array
+	public function disable_plugins(
+		array $plugins,
+	): array
 	{
 		foreach ( $plugins as $plugin_index => $plugin ) {
 			list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin );
-			if (in_array ( $directory, $this->_get_disabled_plugins() ) ) {
-				unset( $plugins[$plugin_index] ) ;
+			if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
+				unset( $plugins[$plugin_index] );
 			}
 		}
 		return $plugins;
@@ -231,7 +233,10 @@ class mu_plugin
 	 * @param $plugin_file
 	 * @return array
 	 */
-	public function add_disabled_notice ( $plugin_meta, $plugin_file ): array
+	public function add_disabled_notice (
+		$plugin_meta,
+		$plugin_file,
+	): array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
@@ -297,11 +302,14 @@ class mu_plugin
 	 * @param $plugin_file
 	 * @return array
 	 */
-	public function remove_activate_link ( $plugin_actions, $plugin_file ): array
+	public function remove_activate_link (
+		$plugin_actions,
+		$plugin_file,
+	): array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins()) ) {
-			unset ( $plugin_actions['activate'] ) ;
+			unset ( $plugin_actions['activate'] );
 		}
 		return $plugin_actions;
 	}
@@ -312,7 +320,9 @@ class mu_plugin
 	 * @param string $link_text
 	 * @return string
 	 */
-	public function add_autologin_link ( string $link_text ): string
+	public function add_autologin_link (
+		string $link_text,
+	): string
 	{
 		if ( ! empty ( $this->autologin_emails ) ){
 
@@ -351,8 +361,7 @@ class mu_plugin
 	 */
 	private function _get_plugin_name (): string
 	{
-		$plugin_data = get_plugin_data ($this->plugin_file) ;
-		return $plugin_data['Name'] ; // note: array key is not 'Plugin Name'
+		return get_plugin_data ($this->plugin_file)['Name']; // note: array key is not 'Plugin Name'
 	}
 
 	/**
@@ -362,10 +371,10 @@ class mu_plugin
 	 */
 	private function _load_config_file (): void {
 		// load deprecated file.
-		$this->_load_deprecated_user_disabled_plugins_file ( ) ;
-		$config_file_path = ABSPATH.self::config_filename ;
+		$this->_load_deprecated_user_disabled_plugins_file ( );
+		$config_file_path = ABSPATH.self::config_filename;
 		if ( file_exists( $config_file_path ) ) {
-			$config = parse_ini_file ( filename: $config_file_path, process_sections: true ) ;
+			$config = parse_ini_file ( filename: $config_file_path, process_sections: true );
 			// add arrays of plugins in both files together.
 			$this->user_disabled_plugins = array_merge ( $this->user_disabled_plugins, $config['disabled_plugins']['plugin'] ?? [] );
 			// set autologin email addresses.
@@ -388,11 +397,11 @@ class mu_plugin
 	 */
 	private function _load_deprecated_user_disabled_plugins_file(): void
 	{
-		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename ;
+		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename;
 		if (file_exists($user_disabled_plugins_path)){
 			$user_disabled_plugins = file($user_disabled_plugins_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 		}
-		$this->user_disabled_plugins = $user_disabled_plugins ?? [] ;
+		$this->user_disabled_plugins = $user_disabled_plugins ?? [];
 	}
 
 	/**
