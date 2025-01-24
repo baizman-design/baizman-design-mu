@@ -84,7 +84,8 @@ An "Autologin" link is added to the WordPress login screen right after "Lost you
 
 ```
 [autologin]
-email = user@domain.com
+email[] = user1@domain.com
+email[] = user2@domain.com
 ```
 
-You may also visit https://domain.test/?auto=user@domain.com, where "user@domain.com" is an email address that corresponds to an account.
+You may also visit https://domain.test/?auto=user1@domain.com, where "user1@domain.com" is an email address that corresponds to an account.

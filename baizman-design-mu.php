@@ -4,7 +4,7 @@
  *
  * @author        Baizman Design
  * @package       Baizman Design MU
- * @version       1.0.13
+ * @version       1.0.14
  *
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
@@ -12,7 +12,7 @@
  * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
- * Version:       1.0.13
+ * Version:       1.0.14
  * License:       GPLv3
  * Text Domain:   baizman-design-mu
  */
@@ -282,6 +282,10 @@ class mu_plugin
 			body.login #nav a.autologin {
 			  font-weight: bold;
 			}
+			#autologin_email {
+				width: 180px;
+			}
+
 		</style>');
 	}
 
@@ -333,12 +337,26 @@ class mu_plugin
 			}
 			// create array of links.
 			$links = [] ;
-			foreach ( $this->autologin_emails as $email ) {
+			// present a menu if there's more than one address.
+			if ( count ( $this->autologin_emails ) > 1 ) {
 
-				// add autologin link.
+				$form = '<form method="get">';
+				$form .= '<label for="autologin_email">Autologin as:</label> ';
+				$form .= '<select name="auto" id="autologin_email" onchange="this.form.submit();">';
+				$form .= '<option value="">&mdash;</option>';
+
+				// create the list of options.
+				$form .= implode(array_map( fn($email): string => '<option value='.$email.'>'.$email.'</option>',
+					$this->autologin_emails
+				));
+
+				$form .= '</select>';
+				$form .= '</form>';
+				$links[] = $form;
+			} else {
 				$links[] = sprintf('%3$s<a class="autologin" href="%1$s/?auto=%2$s">Autologin as %2$s &rarr;</a>',
 					get_home_url(),
-					$email,
+					$this->autologin_emails[0],
 					$login_link_separator,
 				);
 			}
