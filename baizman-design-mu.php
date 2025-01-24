@@ -56,7 +56,7 @@ class mu_plugin
 
 	private array $user_disabled_plugins = [];
 
-	private string $autologin_email = '';
+	private array $autologin_emails = [];
 
 	private string $disabled_plugin_class = 'disabled_plugin';
 
@@ -107,6 +107,11 @@ class mu_plugin
 		add_action( 'login_enqueue_scripts', [$this, 'add_login_screen_styles'] );
 
 		add_action ( 'login_link_separator', [$this, 'set_login_link_separator' ] );
+
+		// add error message to login screen for unknown or invalid accounts.
+		if ( isset( $_GET['redirect_to'] ) && $_GET['redirect_to'] == 'invalid-autologin-user' ) {
+			add_filter( 'login_message', [$this, 'print_invalid_user_account'] );
+		}
 
 	}
 
@@ -191,7 +196,7 @@ class mu_plugin
 				wp_set_auth_cookie( $user->ID );
 				wp_redirect( get_dashboard_url() );
 			} else {
-				wp_redirect( wp_login_url() );
+				wp_redirect( wp_login_url('invalid-autologin-user') );
 			}
 			exit ;
 		}
@@ -309,7 +314,7 @@ class mu_plugin
 	 */
 	public function add_autologin_link ( string $link_text ): string
 	{
-		if ( ! empty ( $this->autologin_email ) ){
+		if ( ! empty ( $this->autologin_emails ) ){
 
 			$separator = '<br>';
 			$login_link_separator = '';
@@ -318,12 +323,16 @@ class mu_plugin
 			}
 			// create array of links.
 			$links = [] ;
-			// add autologin link.
-			$links[] = sprintf('%3$s<a class="autologin" href="%1$s/?auto=%2$s">Autologin as %2$s &rarr;</a>',
-				get_home_url(),
-				$this->autologin_email,
-				$login_link_separator,
-			) ;
+			foreach ( $this->autologin_emails as $email ) {
+
+				// add autologin link.
+				$links[] = sprintf('%3$s<a class="autologin" href="%1$s/?auto=%2$s">Autologin as %2$s &rarr;</a>',
+					get_home_url(),
+					$email,
+					$login_link_separator,
+				);
+			}
+
 			// "Lost your password?"
 			$links[] = $link_text;
 			// separate the links with a break tag.
@@ -359,8 +368,15 @@ class mu_plugin
 			$config = parse_ini_file ( filename: $config_file_path, process_sections: true ) ;
 			// add arrays of plugins in both files together.
 			$this->user_disabled_plugins = array_merge ( $this->user_disabled_plugins, $config['disabled_plugins']['plugin'] ?? [] );
-			// set autologin email address.
-			$this->autologin_email = $config['autologin']['email'] ?? $this->autologin_email;
+			// set autologin email addresses.
+			if ( isset( $config['autologin']['email'] ) ) {
+				if ( is_array ($config['autologin']['email']) ) {
+					$this->autologin_emails = $config['autologin']['email'];
+				} else {
+					// coerce into an array of one item.
+					$this->autologin_emails = [$config['autologin']['email'],];
+				}
+			}
 		}
 	}
 
@@ -387,6 +403,15 @@ class mu_plugin
 	private function _get_disabled_plugins():array
 	{
 		return array_merge ( $this->disabled_plugins, $this->user_disabled_plugins );
+	}
+
+	/**
+	 * Print message on login screen.
+	 *
+	 * @return string
+	 */
+	public function print_invalid_user_account():string {
+		return '<p class="message">That\'s an invalid or non-existent user account.</p>';
 	}
 
 }
