@@ -340,6 +340,9 @@ class mu_plugin
 			// present a menu if there's more than one address.
 			if ( count ( $this->autologin_emails ) > 1 ) {
 
+				// sort alphabetically.
+				sort($this->autologin_emails);
+
 				$form = '<form method="get">';
 				$form .= '<label for="autologin_email">Autologin as:</label> ';
 				$form .= '<select name="auto" id="autologin_email" onchange="this.form.submit();">';
