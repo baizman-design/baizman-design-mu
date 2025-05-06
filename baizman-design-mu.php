@@ -106,7 +106,7 @@ class mu_plugin
 		// callback to add styles to the login screen.
 		add_action( 'login_enqueue_scripts', [$this, 'add_login_screen_styles'] );
 
-		add_action ( 'login_link_separator', [$this, 'set_login_link_separator' ] );
+		add_action( 'login_link_separator', [$this, 'set_login_link_separator' ] );
 
 		// add error message to login screen for unknown or invalid accounts.
 		if ( isset( $_GET['redirect_to'] ) && $_GET['redirect_to'] == 'invalid-autologin-user' ) {
