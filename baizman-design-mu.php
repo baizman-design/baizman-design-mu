@@ -88,6 +88,10 @@ class mu_plugin
 		// @link https://www.wpbeginner.com/wp-tutorials/how-to-disable-wordpress-admin-email-verification-notice/
 		add_filter( 'admin_email_check_interval', '__return_false' );
 
+		// disable media library organization by year and month.
+		// @link https://wordpress.stackexchange.com/questions/284961/how-to-upload-all-media-to-one-folder-with-no-year-month-subfolders
+		//add_filter( 'pre_option_uploads_use_yearmonth_folders', '__return_zero' );
+
 		// callback to forcibly disable select plugins.
 		add_filter( 'option_active_plugins', [$this, 'disable_plugins'] );
 
