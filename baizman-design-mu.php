@@ -48,6 +48,8 @@ class mu_plugin
 		'w3-total-cache', // W3 Total Cache
 		'wordfence', // Wordfence
 		'akismet', // Akismet
+		'wordpress-seo', // Yoast SEO
+		'wordpress-seo-premium', // Yoast SEO Premium
 		];
 
 	private const config_filename = '.baizman-design-mu.ini' ;
