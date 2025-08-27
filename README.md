@@ -2,7 +2,7 @@
 
 ## overview
 
-This is a WordPress [must-use plugin](https://wordpress.org/documentation/article/must-use-plugins/) containing constant definitions and general configuration settings used across my development environments.
+This is a WordPress [must-use plugin](https://developer.wordpress.org/advanced-administration/plugins/mu-plugins/) containing constant definitions and general configuration settings used across my development environments.
 
 ## installation
 
@@ -80,7 +80,7 @@ This is supported for historical reasons.
 
 ### auto-login
 
-An "Autologin" link is added to the WordPress login screen right after "Lost your password?" To set the account to automatically log into, add the following section and key/value pair to `.baizman-design-mu.ini`:
+An "Autologin" link is added to the WordPress login screen right after "Lost your password?" To set the account to automatically log into, add the following section and key/value pairs to `.baizman-design-mu.ini`:
 
 ```
 [autologin]
