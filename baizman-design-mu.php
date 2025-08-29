@@ -50,11 +50,11 @@ class mu_plugin
 		'akismet', // Akismet
 		'wordpress-seo', // Yoast SEO
 		'wordpress-seo-premium', // Yoast SEO Premium
-		];
+	];
 
-	private const config_filename = '.baizman-design-mu.ini' ;
+	private const config_filename = '.baizman-design-mu.ini';
 
-	private const user_disabled_plugins_filename = '.baizman-design-mu-disabled-plugins' ;
+	private const user_disabled_plugins_filename = '.baizman-design-mu-disabled-plugins';
 
 	private array $user_disabled_plugins = [];
 
@@ -70,7 +70,11 @@ class mu_plugin
 		$this->_load_config_file();
 
 		// enable autologin
-		add_action( 'init', [$this, 'autologin'], -PHP_INT_MAX );
+		add_action(
+			hook_name: 'init',
+			callback: [$this, 'autologin'],
+			priority: -PHP_INT_MAX,
+		);
 
 		// https://toolset.com/documentation/programmer-reference/debugging-sites-built-with-toolset/
 		// Alternative debugging method
@@ -81,42 +85,79 @@ class mu_plugin
 
 		// disable all emails.
 		// @link https://wordpress.stackexchange.com/questions/302176/how-to-disable-all-wordpress-emails-modularly-and-programatically
-		add_filter('wp_mail', function ($args) {
-			unset ($args['to']);
-			return $args;
-		} );
+		add_filter(
+			hook_name: 'wp_mail',
+			callback: function ( $args ) {
+				unset ( $args['to'] );
+				return $args;
+			},
+		);
 
 		// disable administration email verification screen.
 		// @link https://www.wpbeginner.com/wp-tutorials/how-to-disable-wordpress-admin-email-verification-notice/
-		add_filter( 'admin_email_check_interval', '__return_false' );
+		add_filter(
+			hook_name: 'admin_email_check_interval',
+			callback: '__return_false',
+		);
 
 		// disable media library organization by year and month.
 		// @link https://wordpress.stackexchange.com/questions/284961/how-to-upload-all-media-to-one-folder-with-no-year-month-subfolders
-		//add_filter( 'pre_option_uploads_use_yearmonth_folders', '__return_zero' );
+		// add_filter(
+		// hook_name: 'pre_option_uploads_use_yearmonth_folders',
+		// callback: '__return_zero',
+		// );
 
 		// callback to forcibly disable select plugins.
-		add_filter( 'option_active_plugins', [$this, 'disable_plugins'] );
+		add_filter(
+			hook_name: 'option_active_plugins',
+			callback: [$this, 'disable_plugins'],
+		);
 
 		// callback to modify plugin data on plugins page.
-		add_filter( 'plugin_row_meta', [$this, 'add_disabled_notice'], 10, 2 );
+		add_filter(
+			hook_name: 'plugin_row_meta',
+			callback: [$this, 'add_disabled_notice'],
+			priority: 10,
+			accepted_args: 2,
+		);
 
 		// callback to add styles to dashboard.
-		add_action( 'admin_head', [$this, 'add_admin_styles'] );
+		add_action(
+			hook_name: 'admin_head',
+			callback: [$this, 'add_admin_styles'],
+		);
 
 		// callback to remove "activate" link from plugin actions for disabled plugins
-		add_filter( 'plugin_action_links', [$this, 'remove_activate_link'], 10, 2 );
+		add_filter(
+			hook_name: 'plugin_action_links',
+			callback: [$this, 'remove_activate_link'],
+			priority: 10,
+			accepted_args: 2,
+		);
 
 		// callback to modify login screen #nav links.
-		add_filter( 'lost_password_html_link', [$this, 'add_autologin_link'] );
+		add_filter(
+			hook_name: 'lost_password_html_link',
+			callback: [$this, 'add_autologin_link'],
+		);
 
 		// callback to add styles to the login screen.
-		add_action( 'login_enqueue_scripts', [$this, 'add_login_screen_styles'] );
+		add_action(
+			hook_name: 'login_enqueue_scripts',
+			callback: [$this, 'add_login_screen_styles'],
+		);
 
-		add_action( 'login_link_separator', [$this, 'set_login_link_separator' ] );
+		add_action(
+			hook_name: 'login_link_separator',
+			callback: [$this, 'set_login_link_separator' ],
+		);
 
 		// add error message to login screen for unknown or invalid accounts.
 		if ( isset( $_GET['redirect_to'] ) && $_GET['redirect_to'] == 'invalid-autologin-user' ) {
-			add_filter( 'login_message', [$this, 'print_invalid_user_account'] );
+			add_filter(
+				hook_name: 'login_message',
+				callback: [$this, 'print_invalid_user_account'],
+			);
 		}
 
 	}
@@ -388,7 +429,7 @@ class mu_plugin
 	 */
 	private function _get_plugin_name (): string
 	{
-		return get_plugin_data ($this->plugin_file)['Name']; // note: array key is not 'Plugin Name'
+		return get_plugin_data ($this->plugin_file)['Name']; // note: array key is not 'Plugin Name'.
 	}
 
 	/**
