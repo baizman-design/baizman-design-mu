@@ -261,16 +261,13 @@ class mu_plugin
 	 * @return array
 	 */
 	public function disable_plugins(
-		array $plugins,
+		array $plugins = [],
 	): array
 	{
-		foreach ( $plugins as $plugin_index => $plugin ) {
+		return array_filter ( array: $plugins, callback: function ( $plugin ) {
 			list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin );
-			if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
-				unset( $plugins[$plugin_index] );
-			}
-		}
-		return $plugins;
+			return ! in_array ( $directory, $this->_get_disabled_plugins());
+		});
 	}
 
 	/**
