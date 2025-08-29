@@ -29,7 +29,9 @@ Some constants must be located in wp-config.php and have no effect in a must-use
 + WP_DEVELOPMENT_MODE
 */
 
-namespace baizman_design_mu ;
+namespace baizman_design_mu;
+
+use WP_Error;
 
 class mu_plugin
 {
@@ -147,6 +149,7 @@ class mu_plugin
 			callback: [$this, 'add_login_screen_styles'],
 		);
 
+		// callback to remove login links separator.
 		add_action(
 			hook_name: 'login_link_separator',
 			callback: [$this, 'set_login_link_separator' ],
@@ -159,6 +162,13 @@ class mu_plugin
 				callback: [$this, 'print_invalid_user_account'],
 			);
 		}
+
+		// callback for
+		add_filter(
+			hook_name: 'upgrader_pre_install',
+			callback: [$this, 'skip_plugin_aliases'],
+			accepted_args: 2,
+		);
 
 	}
 
@@ -333,6 +343,12 @@ class mu_plugin
 		</style>');
 	}
 
+	/**
+	 * If users can register, remove default login links separator ("|").
+	 *
+	 * @param $separator
+	 * @return string
+	 */
 	public function set_login_link_separator (
 		$separator,
 	): string
@@ -416,6 +432,52 @@ class mu_plugin
 		return $link_text;
 	}
 
+	/**
+	 * Print message on login screen.
+	 *
+	 * @return string
+	 */
+	public function print_invalid_user_account():string
+	{
+		return '<p class="message">That\'s an invalid or non-existent user account.</p>';
+	}
+
+	/**
+	 * Prevent symbolically-linked plugins from being updated.
+	 * FIXME (maybe): the plugins are sometimes being deleted from the shared folder.
+	 *
+	 * @param $response
+	 * @param $hook_extra
+	 * @return mixed|WP_Error
+	 */
+	public function skip_plugin_aliases(
+		$response,
+		$hook_extra,
+	):mixed
+	{
+		$this->_log($response);
+		if ( is_wp_error( $response ) ) {
+ 		   return $response;
+		}
+		if ( isset( $hook_extra['plugin'] ) ) {
+			$plugin = $hook_extra['plugin'];
+
+			$plugin_directory = dirname( $plugin );
+			$plugin_directory_path = sprintf( '%1$s/%2$s',
+				WP_PLUGIN_DIR,
+				$plugin_directory,
+			);
+			if ( is_link( filename: $plugin_directory_path ) ) {
+				$this->_log('IS A LINK');
+				return new WP_Error(
+					code: 'symbolic_link',
+					message: 'The plugin was not updated because it is a symbolic link.'
+				);
+			}
+		}
+
+		return $response;
+	}
 
 	/**
 	 * Get the plugin name.
@@ -480,12 +542,31 @@ class mu_plugin
 	}
 
 	/**
-	 * Print message on login screen.
+	 * Log data to WP_DEBUG_LOG.
 	 *
-	 * @return string
+	 * @param $data
+	 * @return void
 	 */
-	public function print_invalid_user_account():string {
-		return '<p class="message">That\'s an invalid or non-existent user account.</p>';
+	private function _log( $data ):void
+	{
+		$message = PHP_EOL . PHP_EOL;
+		// convert arrays and objects to strings.
+		if ( is_array( $data ) || is_object( $data ) ) {
+			$message .= print_r(
+				value: $data,
+				return: 1
+			);
+		} else {
+			$message .= $data;
+		}
+		$message .= PHP_EOL . PHP_EOL;
+		if ( defined( constant_name: 'WP_DEBUG_LOG' ) ) {
+			error_log(
+				message: $message,
+				message_type: 3,
+				destination: WP_DEBUG_LOG,
+			);
+		}
 	}
 
 }
