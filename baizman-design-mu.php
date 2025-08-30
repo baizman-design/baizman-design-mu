@@ -539,10 +539,14 @@ class mu_plugin
 	/**
 	 * Log data to WP_DEBUG_LOG.
 	 *
-	 * @param $data
+	 * @param mixed $data
+	 * @param string $label
 	 * @return void
 	 */
-	private function _log( $data ):void
+	public static function log(
+		mixed $data,
+		string $label = '',
+	):void
 	{
 		$timestamp_format = 'Y.m.d H.i.s';
 		$whitespace = str_repeat(
@@ -555,8 +559,14 @@ class mu_plugin
 				format: $timestamp_format
 			),
 		);
+		if ( ! empty ( $label ) )
+		{
+			$message .= sprintf('%1$s: ',
+				$label,
+			);
+		}
 		// convert arrays and objects to strings.
-		if ( is_array( $data ) || is_object( $data ) ) {
+		if ( is_array( value: $data ) || is_object( value: $data ) ) {
 			$message .= print_r(
 				value: $data,
 				return: 1,
