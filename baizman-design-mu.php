@@ -455,27 +455,23 @@ class mu_plugin
 		$hook_extra,
 	):mixed
 	{
-		$this->_log($response);
 		if ( is_wp_error( $response ) ) {
  		   return $response;
 		}
 		if ( isset( $hook_extra['plugin'] ) ) {
 			$plugin = $hook_extra['plugin'];
-
 			$plugin_directory = dirname( $plugin );
 			$plugin_directory_path = sprintf( '%1$s/%2$s',
 				WP_PLUGIN_DIR,
 				$plugin_directory,
 			);
 			if ( is_link( filename: $plugin_directory_path ) ) {
-				$this->_log('IS A LINK');
 				return new WP_Error(
 					code: 'symbolic_link',
 					message: 'The plugin was not updated because it is a symbolic link.'
 				);
 			}
 		}
-
 		return $response;
 	}
 
