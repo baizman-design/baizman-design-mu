@@ -516,7 +516,6 @@ class mu_plugin
 		}
 	}
 
-
 	/**
 	 * Load user disabled plugins from a file. Deprecated.
 	 *
@@ -549,17 +548,27 @@ class mu_plugin
 	 */
 	private function _log( $data ):void
 	{
-		$message = PHP_EOL . PHP_EOL;
+		$timestamp_format = 'Y.m.d H.i.s';
+		$whitespace = str_repeat(
+			string: PHP_EOL,
+			times: 2,
+		);
+		$message = $whitespace;
+		$message .= sprintf('%1$s | ',
+			current_datetime()->format(
+				format: $timestamp_format
+			),
+		);
 		// convert arrays and objects to strings.
 		if ( is_array( $data ) || is_object( $data ) ) {
 			$message .= print_r(
 				value: $data,
-				return: 1
+				return: 1,
 			);
 		} else {
 			$message .= $data;
 		}
-		$message .= PHP_EOL . PHP_EOL;
+		$message .= $whitespace;
 		if ( defined( constant_name: 'WP_DEBUG_LOG' ) ) {
 			error_log(
 				message: $message,
