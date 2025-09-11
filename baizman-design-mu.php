@@ -236,6 +236,13 @@ class mu_plugin
 		if (!defined('ALLOW_UNFILTERED_UPLOADS')) {
 			define('ALLOW_UNFILTERED_UPLOADS', true);
 		}
+
+		// WP Mail SMTP. https://wordpress.org/plugins/wp-mail-smtp/
+		// disable sending email.
+		if (!defined('WPMS_DO_NOT_SEND')) {
+			define('WPMS_DO_NOT_SEND', true);
+		}
+
 	}
 
 	/**
