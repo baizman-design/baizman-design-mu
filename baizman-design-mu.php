@@ -155,7 +155,7 @@ class mu_plugin
 			callback: [$this, 'set_login_link_separator' ],
 		);
 
-		// add error message to login screen for unknown or invalid accounts.
+		// callback to add an error message to the login screen for unknown or invalid accounts.
 		if ( isset( $_GET['redirect_to'] ) && $_GET['redirect_to'] == 'invalid-autologin-user' ) {
 			add_filter(
 				hook_name: 'login_message',
@@ -163,7 +163,7 @@ class mu_plugin
 			);
 		}
 
-		// callback for
+		// callback to skip updating plugins that are symbolic links.
 		add_filter(
 			hook_name: 'upgrader_pre_install',
 			callback: [$this, 'skip_plugin_aliases'],
