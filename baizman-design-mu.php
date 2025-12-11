@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name:   Baizman Design Must-Use Plugin
  * Plugin URI:    https://github.com/baizman-design/baizman-design-mu/
- * Description:   A must-use WordPress plugin containing constant definitions and general configuration settings used across my development environments.
+ * Description:   A WordPress must-use plugin containing constant definitions and general configuration settings used across my development environments.
  * Author:        Saul Baizman
  * Author URI:    https://baizmandesign.com
  * Version:       1.0.14
