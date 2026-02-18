@@ -52,6 +52,7 @@ class mu_plugin
 		'akismet', // Akismet
 		'wordpress-seo', // Yoast SEO
 		'wordpress-seo-premium', // Yoast SEO Premium
+		'wp-security-audit-log', // WP Activity Log
 	];
 
 	private const config_filename = '.baizman-design-mu.ini';
