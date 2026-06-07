@@ -108,7 +108,7 @@ class mu_plugin
 		add_filter(
 			hook_name: 'wp_mail',
 			callback: function ( $args ) {
-				unset ( $args['to'] );
+				unset( $args['to'] );
 				return $args;
 			},
 		);
@@ -130,13 +130,13 @@ class mu_plugin
 		// callback to forcibly disable select plugins.
 		add_filter(
 			hook_name: 'option_active_plugins',
-			callback: [$this, 'disable_plugins'],
+			callback: [$this, 'disable_plugins',],
 		);
 
 		// callback to modify plugin data on plugins page.
 		add_filter(
 			hook_name: 'plugin_row_meta',
-			callback: [$this, 'add_disabled_notice'],
+			callback: [$this, 'add_disabled_notice',],
 			priority: 10,
 			accepted_args: 2,
 		);
@@ -144,13 +144,13 @@ class mu_plugin
 		// callback to add styles to dashboard.
 		add_action(
 			hook_name: 'admin_head',
-			callback: [$this, 'add_admin_styles'],
+			callback: [$this, 'add_admin_styles',],
 		);
 
 		// callback to remove "activate" link from plugin actions for disabled plugins
 		add_filter(
 			hook_name: 'plugin_action_links',
-			callback: [$this, 'remove_activate_link'],
+			callback: [$this, 'remove_activate_link',],
 			priority: 10,
 			accepted_args: 2,
 		);
@@ -158,33 +158,33 @@ class mu_plugin
 		// callback to modify login screen #nav links.
 		add_filter(
 			hook_name: 'lost_password_html_link',
-			callback: [$this, 'add_autologin_link'],
+			callback: [$this, 'add_autologin_link',],
 		);
 
 		// callback to add styles to the login screen.
 		add_action(
 			hook_name: 'login_enqueue_scripts',
-			callback: [$this, 'add_login_screen_styles'],
+			callback: [$this, 'add_login_screen_styles',],
 		);
 
 		// callback to remove login links separator.
 		add_action(
 			hook_name: 'login_link_separator',
-			callback: [$this, 'set_login_link_separator' ],
+			callback: [$this, 'set_login_link_separator',],
 		);
 
 		// callback to add an error message to the login screen for unknown or invalid accounts.
 		if ( isset( $_GET['redirect_to'] ) && $_GET['redirect_to'] == 'invalid-autologin-user' ) {
 			add_filter(
 				hook_name: 'login_message',
-				callback: [$this, 'print_invalid_user_account'],
+				callback: [$this, 'print_invalid_user_account',],
 			);
 		}
 
 		// callback to skip updating plugins that are symbolic links.
 		add_filter(
 			hook_name: 'upgrader_pre_install',
-			callback: [$this, 'skip_plugin_aliases'],
+			callback: [$this, 'skip_plugin_aliases',],
 			accepted_args: 2,
 		);
 
@@ -527,7 +527,7 @@ class mu_plugin
 			$admin_bar->remove_menu( $node );
 		}
 	}
-	
+
 	/**
 	 * Add convenience links for plugins.
 	 *
