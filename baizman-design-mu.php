@@ -195,6 +195,12 @@ class mu_plugin
 			priority: 1000, // the last to run.
 		);
 
+		// add plugin links for admins.
+		add_action(
+			hook_name: 'admin_menu',
+			callback: [$this, 'add_plugin_convenience_links',],
+		);
+
 	}
 
 	/**
@@ -520,6 +526,45 @@ class mu_plugin
 		foreach ( $this->_get_hidden_admin_toolbar_links() as $node ) {
 			$admin_bar->remove_menu( $node );
 		}
+	}
+	
+	/**
+	 * Add convenience links for plugins.
+	 *
+	 * @return void
+	 */
+	public function add_plugin_convenience_links():void
+	{
+		global $submenu;
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Active Plugins',
+			menu_title: 'Active Plugins',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=active',
+		);
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Inactive Plugins',
+			menu_title: 'Inactive Plugins',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=inactive',
+		);
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Must-Use Plugins',
+			menu_title: 'Must-Use Plugins',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=mustuse',
+		);
+		// TODO: make conditional.
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Update Available',
+			menu_title: 'Update Available',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=upgrade',
+		);
 	}
 
 	/**
