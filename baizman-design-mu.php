@@ -178,7 +178,7 @@ class mu_plugin
 	 *
 	 * @return void
 	 */
-	public function define_constants (): void
+	public function define_constants():void
 	{
 		if (!defined('JETPACK_STAGING_MODE')) {
 			define('JETPACK_STAGING_MODE', true);
@@ -251,7 +251,7 @@ class mu_plugin
 	 *
 	 * @return void
 	 */
-	public function autologin(): void
+	public function autologin():void
 	{
 		if ( ! empty( $_GET['auto'] ) ) {
 			$user = get_user_by( 'email', $_GET['auto'] );
@@ -280,7 +280,7 @@ class mu_plugin
 	 */
 	public function disable_plugins(
 		array $plugins = [],
-	): array
+	):array
 	{
 		return array_filter ( array: $plugins, callback: function ( $plugin ) {
 			list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin );
@@ -298,7 +298,7 @@ class mu_plugin
 	public function add_disabled_notice (
 		$plugin_meta,
 		$plugin_file,
-	): array
+	):array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins() ) ) {
@@ -320,7 +320,7 @@ class mu_plugin
 	 * @link https://css-tricks.com/snippets/wordpress/apply-custom-css-to-admin-area/
 	 * @return void
 	 */
-	public function add_admin_styles(): void
+	public function add_admin_styles():void
 	{
 	  printf('<style>
 		span.%1$s {
@@ -337,7 +337,7 @@ class mu_plugin
 	 *
 	 * @return void
 	 */
-	public function add_login_screen_styles(): void
+	public function add_login_screen_styles():void
 	{
 		print('<style>
 			/* boldface the "autologin" link. */
@@ -357,11 +357,11 @@ class mu_plugin
 	 * @param $separator
 	 * @return string
 	 */
-	public function set_login_link_separator (
+	public function set_login_link_separator(
 		$separator,
-	): string
+	):string
 	{
-		if (get_option( 'users_can_register' )) {
+		if ( get_option( 'users_can_register' ) ) {
 			return '';
 		}
 		return $separator;
@@ -374,10 +374,10 @@ class mu_plugin
 	 * @param $plugin_file
 	 * @return array
 	 */
-	public function remove_activate_link (
+	public function remove_activate_link(
 		$plugin_actions,
 		$plugin_file,
-	): array
+	):array
 	{
 		list ( $directory ) = explode ( DIRECTORY_SEPARATOR, $plugin_file );
 		if ( in_array ( $directory, $this->_get_disabled_plugins()) ) {
@@ -392,9 +392,9 @@ class mu_plugin
 	 * @param string $link_text
 	 * @return string
 	 */
-	public function add_autologin_link (
+	public function add_autologin_link(
 		string $link_text,
-	): string
+	):string
 	{
 		if ( ! empty ( $this->autologin_emails ) ){
 
@@ -490,9 +490,9 @@ class mu_plugin
 	 *
 	 * @return string
 	 */
-	private function _get_plugin_name (): string
+	private function _get_plugin_name():string
 	{
-		return get_plugin_data ($this->plugin_file)['Name']; // note: array key is not 'Plugin Name'.
+		return get_plugin_data( $this->plugin_file )['Name']; // note: array key is not 'Plugin Name'.
 	}
 
 	/**
@@ -500,7 +500,8 @@ class mu_plugin
 	 *
 	 * @return void
 	 */
-	private function _load_config_file (): void {
+	private function _load_config_file():void
+	{
 		// load deprecated file.
 		$this->_load_deprecated_user_disabled_plugins_file ( );
 		$config_file_path = ABSPATH.self::config_filename;
@@ -525,7 +526,7 @@ class mu_plugin
 	 *
 	 * @return void
 	 */
-	private function _load_deprecated_user_disabled_plugins_file(): void
+	private function _load_deprecated_user_disabled_plugins_file():void
 	{
 		$user_disabled_plugins_path = ABSPATH.self::user_disabled_plugins_filename;
 		if (file_exists($user_disabled_plugins_path)){
