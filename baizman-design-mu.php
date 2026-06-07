@@ -53,6 +53,7 @@ class mu_plugin
 		'wordpress-seo', // Yoast SEO
 		'wordpress-seo-premium', // Yoast SEO Premium
 		'wp-security-audit-log', // WP Activity Log
+		'melapress-login-security', // Melapress Login Security
 	];
 
 	private const config_filename = '.baizman-design-mu.ini';
