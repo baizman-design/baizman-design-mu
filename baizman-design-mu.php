@@ -32,6 +32,7 @@ Some constants must be located in wp-config.php and have no effect in a must-use
 namespace baizman_design_mu;
 
 use WP_Error;
+use WP_Admin_Bar;
 
 class mu_plugin
 {
@@ -56,11 +57,26 @@ class mu_plugin
 		'melapress-login-security', // Melapress Login Security
 	];
 
+	// nodes of admin toolbar links to hide.
+	private array $hidden_admin_toolbar_links = [
+		'wp-logo', // WordPress logo
+		'wpseo-menu', // Yoast SEO
+		'new-content', // New content menu
+		'updates', // Updates
+		'toolset_admin_bar_menu', // Design with Toolset
+		'accessibility-checker', // Accessibility Checker
+		'ate-status-bar', // WPML Translation icon
+		'command-palette', // Command Palette
+	];
+
+
 	private const config_filename = '.baizman-design-mu.ini';
 
 	private const user_disabled_plugins_filename = '.baizman-design-mu-disabled-plugins';
 
 	private array $user_disabled_plugins = [];
+
+	private array $user_hidden_admin_bar_links = [];
 
 	private array $autologin_emails = [];
 
@@ -170,6 +186,13 @@ class mu_plugin
 			hook_name: 'upgrader_pre_install',
 			callback: [$this, 'skip_plugin_aliases'],
 			accepted_args: 2,
+		);
+
+		// remove links from the admin toolbar.
+		add_action(
+			hook_name: 'admin_bar_menu',
+			callback: [$this, 'modify_admin_toolbar_links',],
+			priority: 1000, // the last to run.
 		);
 
 	}
@@ -485,6 +508,21 @@ class mu_plugin
 	}
 
 	/**
+	 * Remove unneeded admin bar links.
+	 *
+	 * @param WP_Admin_Bar $admin_bar
+	 * @return void
+	 */
+	public function modify_admin_toolbar_links(
+		WP_Admin_Bar $admin_bar,
+	):void
+	{
+		foreach ( $this->_get_hidden_admin_toolbar_links() as $node ) {
+			$admin_bar->remove_menu( $node );
+		}
+	}
+
+	/**
 	 * Get the plugin name.
 	 *
 	 * @link https://developer.wordpress.org/reference/functions/get_plugin_data/
@@ -507,9 +545,16 @@ class mu_plugin
 		$this->_load_deprecated_user_disabled_plugins_file ( );
 		$config_file_path = ABSPATH.self::config_filename;
 		if ( file_exists( $config_file_path ) ) {
-			$config = parse_ini_file ( filename: $config_file_path, process_sections: true );
+			$config = parse_ini_file(
+				filename: $config_file_path,
+				process_sections: true,
+			);
 			// add arrays of plugins in both files together.
 			$this->user_disabled_plugins = array_merge ( $this->user_disabled_plugins, $config['disabled_plugins']['plugin'] ?? [] );
+
+			// extract array of admin links.
+			$this->user_hidden_admin_bar_links = $config['admin_bar_links']['link'] ?? [];
+
 			// set autologin email addresses.
 			if ( isset( $config['autologin']['email'] ) ) {
 				if ( is_array ($config['autologin']['email']) ) {
@@ -543,7 +588,23 @@ class mu_plugin
 	 */
 	private function _get_disabled_plugins():array
 	{
-		return array_merge ( $this->disabled_plugins, $this->user_disabled_plugins );
+		return array_merge(
+			$this->disabled_plugins,
+			$this->user_disabled_plugins,
+		);
+	}
+
+	/**
+	 * Get all disabled admin toolbar links.
+	 *
+	 * @return array
+	 */
+	private function _get_hidden_admin_toolbar_links():array
+	{
+		return array_merge(
+			$this->hidden_admin_toolbar_links,
+			$this->user_hidden_admin_bar_links,
+		);
 	}
 
 	/**

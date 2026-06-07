@@ -78,6 +78,20 @@ Add a slug, one per line, to a file named `.baizman-design-mu-disabled-plugins` 
 
 This is supported for historical reasons.
 
+### hide admin toolbar links
+
+The plugin can hide undesired admin toolbar links.
+
+To hide a link not included in the plugin's default list, add the following section and key/value pairs to `.baizman-design-mu.ini`:
+
+```
+[admin_bar_links]
+link[] = comments
+...
+```
+
+The names are derived from the [WP_Admin_Bar class node name](https://developer.wordpress.org/reference/classes/wp_admin_bar/).
+
 ### auto-login
 
 An "Autologin" link is added to the WordPress login screen right after "Lost your password?" To set the account to automatically log into, add the following section and key/value pairs to `.baizman-design-mu.ini`:
