@@ -557,14 +557,15 @@ class mu_plugin
 			capability: 'manage_options',
 			menu_slug: 'plugins.php?plugin_status=mustuse',
 		);
-		// TODO: make conditional.
-		add_submenu_page(
-			parent_slug: 'plugins.php',
-			page_title: 'Update Available',
-			menu_title: 'Update Available',
-			capability: 'manage_options',
-			menu_slug: 'plugins.php?plugin_status=upgrade',
-		);
+		if ( $this->_has_an_update( transient: 'update_plugins' ) ) {
+			add_submenu_page(
+				parent_slug: 'plugins.php',
+				page_title: 'Update Available',
+				menu_title: 'Update Available',
+				capability: 'manage_options',
+				menu_slug: 'plugins.php?plugin_status=upgrade',
+			);
+		}
 	}
 
 	/**
@@ -650,6 +651,31 @@ class mu_plugin
 			$this->hidden_admin_toolbar_links,
 			$this->user_hidden_admin_bar_links,
 		);
+	}
+
+	/**
+	 * Check whether there are (plugin) updates.
+	 *
+	 * @param string $transient
+	 * @return bool
+	 */
+	private function _has_an_update(
+		string $transient,
+	):bool
+	{
+		$plugins = get_site_transient(
+			transient: $transient,
+		);
+		// if the response property is not empty, there are updates.
+		if ( isset( $plugins->response ) )
+		{
+			foreach ( $plugins->response as $plugin ) {
+				if ( isset( $plugin->slug ) ) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
