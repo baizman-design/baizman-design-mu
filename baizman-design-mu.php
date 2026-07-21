@@ -544,24 +544,52 @@ class mu_plugin
 		global $submenu;
 		add_submenu_page(
 			parent_slug: 'plugins.php',
-			page_title: 'Active Plugins',
-			menu_title: 'Active Plugins',
+			page_title: 'Active',
+			menu_title: 'Active',
 			capability: 'manage_options',
 			menu_slug: 'plugins.php?plugin_status=active',
 		);
 		add_submenu_page(
 			parent_slug: 'plugins.php',
-			page_title: 'Inactive Plugins',
-			menu_title: 'Inactive Plugins',
+			page_title: 'Inactive',
+			menu_title: 'Inactive',
 			capability: 'manage_options',
 			menu_slug: 'plugins.php?plugin_status=inactive',
 		);
 		add_submenu_page(
 			parent_slug: 'plugins.php',
-			page_title: 'Must-Use Plugins',
-			menu_title: 'Must-Use Plugins',
+			page_title: 'Recently Active',
+			menu_title: 'Recently Active',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=recently_activated',
+		);
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Must-Use',
+			menu_title: 'Must-Use',
 			capability: 'manage_options',
 			menu_slug: 'plugins.php?plugin_status=mustuse',
+		);
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Auto-updates Enabled',
+			menu_title: 'Auto-updates Enabled',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=auto-update-enabled',
+		);
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Auto-updates Disabled',
+			menu_title: 'Auto-updates Disabled',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=auto-update-disabled',
+		);
+		add_submenu_page(
+			parent_slug: 'plugins.php',
+			page_title: 'Drop-in',
+			menu_title: 'Drop-in',
+			capability: 'manage_options',
+			menu_slug: 'plugins.php?plugin_status=dropins',
 		);
 		if ( $this->_has_an_update( transient: 'update_plugins' ) ) {
 			add_submenu_page(
