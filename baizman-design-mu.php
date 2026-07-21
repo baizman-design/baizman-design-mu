@@ -274,6 +274,12 @@ class mu_plugin
 			define('WPMS_DO_NOT_SEND', true);
 		}
 
+		if (!defined( 'TOOLSET_DISABLE_CODE_SNIPPETS' )){
+			define( 'TOOLSET_DISABLE_CODE_SNIPPETS', true );
+		}
+		if (!defined( 'TOOLSET_DISABLE_CODE_SNIPPETS_GUI' )){
+			define( 'TOOLSET_DISABLE_CODE_SNIPPETS_GUI', true );
+		}
 	}
 
 	/**
