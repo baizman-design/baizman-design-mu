@@ -572,15 +572,15 @@ class mu_plugin
 		);
 		add_submenu_page(
 			parent_slug: 'plugins.php',
-			page_title: 'Auto-updates Enabled',
-			menu_title: 'Auto-updates Enabled',
+			page_title: 'Auto-updates On',
+			menu_title: 'Auto-updates On',
 			capability: 'manage_options',
 			menu_slug: 'plugins.php?plugin_status=auto-update-enabled',
 		);
 		add_submenu_page(
 			parent_slug: 'plugins.php',
-			page_title: 'Auto-updates Disabled',
-			menu_title: 'Auto-updates Disabled',
+			page_title: 'Auto-updates Off',
+			menu_title: 'Auto-updates Off',
 			capability: 'manage_options',
 			menu_slug: 'plugins.php?plugin_status=auto-update-disabled',
 		);
