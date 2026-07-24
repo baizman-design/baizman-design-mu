@@ -137,7 +137,6 @@ class mu_plugin
 		add_filter(
 			hook_name: 'plugin_row_meta',
 			callback: [$this, 'add_disabled_notice',],
-			priority: 10,
 			accepted_args: 2,
 		);
 
@@ -151,7 +150,6 @@ class mu_plugin
 		add_filter(
 			hook_name: 'plugin_action_links',
 			callback: [$this, 'remove_activate_link',],
-			priority: 10,
 			accepted_args: 2,
 		);
 
@@ -541,7 +539,6 @@ class mu_plugin
 	 */
 	public function add_plugin_convenience_links():void
 	{
-		global $submenu;
 		add_submenu_page(
 			parent_slug: 'plugins.php',
 			page_title: 'Active',
