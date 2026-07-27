@@ -41,22 +41,22 @@ class mu_plugin
 
 	// slugs of plugins to forcibly disable.
 	private array $disabled_plugins = [
-		'sucuri-scanner', // Sucuri
-		'updraftplus', // UpdraftPlus
+		'akismet', // Akismet
+		'backwpup', // BackWPup
 		'comet-cache', // Comet Cache
+		'melapress-login-security', // Melapress Login Security
+		'performance-lab', // Performance Lab
 		'sg-cachepress', // Speed Optimizer (SiteGround)
 		'sg-security', // Security Optimizer (SiteGround)
-		'wp-2fa', // WP 2FA - Two-factor authentication for WordPress
-		'backwpup', // BackWPup
+		'sucuri-scanner', // Sucuri
+		'updraftplus', // UpdraftPlus
 		'w3-total-cache', // W3 Total Cache
 		'wordfence', // Wordfence
-		'akismet', // Akismet
-		'wordpress-seo', // Yoast SEO
 		'wordpress-seo-premium', // Yoast SEO Premium
+		'wordpress-seo', // Yoast SEO
+		'wp-2fa', // WP 2FA - Two-factor authentication for WordPress
 		'wp-security-audit-log', // WP Activity Log
-		'melapress-login-security', // Melapress Login Security
 		'wp-super-cache', // WP Super Cache
-		'performance-lab', // Performance Lab
 	];
 
 	// nodes of admin toolbar links to hide.
