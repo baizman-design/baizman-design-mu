@@ -55,6 +55,8 @@ class mu_plugin
 		'wordpress-seo-premium', // Yoast SEO Premium
 		'wp-security-audit-log', // WP Activity Log
 		'melapress-login-security', // Melapress Login Security
+		'wp-super-cache', // WP Super Cache
+		'performance-lab', // Performance Lab
 	];
 
 	// nodes of admin toolbar links to hide.
