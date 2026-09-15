@@ -33,6 +33,7 @@ namespace baizman_design_mu;
 
 use WP_Error;
 use WP_Admin_Bar;
+use WP_Query;
 
 class mu_plugin
 {
@@ -201,6 +202,26 @@ class mu_plugin
 			callback: [$this, 'add_plugin_convenience_links',],
 		);
 
+		// media library "Sort" column.
+		add_filter(
+			hook_name: 'manage_media_columns',
+			callback: [$this, 'media_library_columns',],
+		);
+		add_filter(
+			hook_name: 'manage_media_custom_column',
+			callback: [$this, 'media_library_columns_output',],
+			priority: 10,
+			accepted_args: 2,
+		);
+		add_filter(
+			hook_name: 'manage_upload_sortable_columns',
+			callback: [$this, 'media_library_sortable_columns',],
+		);
+		add_filter(
+			hook_name: 'posts_orderby',
+			callback: [$this, 'sort_media_library_files_orderby'],
+			accepted_args: 2,
+		);
 	}
 
 	/**
@@ -602,6 +623,175 @@ class mu_plugin
 	}
 
 	/**
+	 * Sort media library files by file size.
+	 * Note: this is resource-intensive.
+	 *
+	 * @param string $orderby
+	 * @param WP_Query $query
+	 * @return string
+	 */
+	public function sort_media_library_files_orderby(
+		string $orderby,
+		WP_Query $query,
+	):string
+	{
+		if (
+			is_admin() &&
+			$query->is_main_query() &&
+			'size' === $query->get( query_var: 'orderby' )
+		) {
+			$order = $query->get(
+				query_var: 'order',
+			);
+			$orderby_transient_key = sprintf( '%1$s_media_library_orderby_%2$s',
+				__NAMESPACE__, // 1
+				$order, // 2
+			);
+			$orderby_transient_value = get_transient(
+				transient: $orderby_transient_key,
+			);
+			if ( $orderby_transient_value === false ) {
+				// get all attachments.
+				$attachments = new WP_Query(
+					query: [
+						'post_type' => 'attachment',
+						'numberposts' => -1,
+						'posts_per_page' => -1,
+						'post_status' => 'inherit',
+					],
+				);
+				if ( $attachments->have_posts() ) {
+					$attachment_posts = $attachments->posts;
+					// sort by file size.
+					usort(
+						array: $attachment_posts,
+						callback: function ( $a, $b ) use ( $order ) {
+							// get the filesize in bytes
+							$image_a_size = wp_filesize(
+								path: $this->get_file_path(
+									attachment_id: $a->ID,
+								),
+							);
+							$image_b_size = wp_filesize(
+								path: $this->get_file_path(
+									attachment_id: $b->ID,
+								),
+							);
+							if ( $image_a_size == $image_b_size ) {
+								return 0;
+							}
+							// ascending.
+							if ( $order == 'ASC' ) {
+								return ( $image_a_size < $image_b_size ) ? -1 : 1;
+							}
+							// descending.
+							return ( $image_a_size > $image_b_size ) ? -1 : 1;
+						},
+					);
+					$column = sprintf('%1$sposts.%2$s',
+						$GLOBALS['wpdb']->prefix, // 1
+						'id', // 2
+					);
+					$attachment_id_order = implode( separator: ',',
+						array: wp_list_pluck(
+							input_list: $attachment_posts,
+							field: 'ID',
+						),
+					);
+					// https://medium.com/@python-javascript-php-html-css/custom-sorting-order-in-mysql-is-it-possible-93ec27fc856f
+					$orderby = sprintf('FIELD(%1$s,%2$s)',
+						$column, // 1
+						$attachment_id_order, // 2
+					);
+					set_transient(
+						transient: $orderby_transient_key,
+						value: $orderby,
+						expiration: HOUR_IN_SECONDS,
+					);
+				}
+			} else {
+				$orderby = $orderby_transient_value;
+			}
+		}
+		return $orderby;
+	}
+
+	/**
+	 * Add custom column names to the Media Library screen.
+	 *
+	 * @link https://www.isitwp.com/add-new-column-with-media-id-to-media-library/
+	 *
+	 * @param array $columns
+	 * @return array
+	 */
+	public function media_library_columns(
+		array $columns,
+	): array
+	{
+		$new_columns = [
+			// format: slug => name
+			'size' => 'Size',
+			];
+		return array_merge(
+			$columns,
+			$new_columns,
+		);
+	}
+
+	/**
+	 * Populate custom column content on the Media Library screen.
+	 *
+	 * @link https://www.isitwp.com/add-new-column-with-media-id-to-media-library/
+	 *
+	 * @param string $column_name
+	 * @param int $ID
+	 * @return void
+	 */
+	public function media_library_columns_output(
+		string $column_name,
+		int $ID,
+	): void
+	{
+		switch ( $column_name ) {
+			case 'size':
+				$image_path = $this->get_file_path(
+					attachment_id: $ID,
+				);
+				if ( file_exists( filename: $image_path ) ) {
+					print(
+						size_format(
+							bytes: wp_filesize(
+								path: $image_path,
+							),
+						)
+					);
+				} else {
+					// uh oh, file does not exist!
+					print (
+						'!'
+					);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Set "Size" as a sortable column.
+	 *
+	 * @param array $columns
+	 * @return array
+	 */
+	public function media_library_sortable_columns(
+		array $columns,
+	): array
+	{
+		$columns['size'] = 'size';
+		return $columns;
+	}
+
+	/**
 	 * Get the plugin name.
 	 *
 	 * @link https://developer.wordpress.org/reference/functions/get_plugin_data/
@@ -709,6 +899,26 @@ class mu_plugin
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Get the path to an uploaded file.
+	 *
+	 * @param int $attachment_id
+	 * @return string
+	 */
+	private function get_file_path(
+		int $attachment_id,
+	):string
+	{
+		$upload_dir = wp_upload_dir();
+		return str_replace(
+			search: $upload_dir['baseurl'],
+			replace: $upload_dir['basedir'],
+			subject: wp_get_attachment_url(
+				attachment_id: $attachment_id,
+			),
+		);
 	}
 
 	/**
